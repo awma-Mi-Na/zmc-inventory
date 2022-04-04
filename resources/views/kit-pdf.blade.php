@@ -6,34 +6,34 @@
 </head>
 
 <body>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th colspan="3">
-                        <p>ZMC-SRHF</p>
-                        <p>{{ $title }}</p>
-                        <p>DATE: {{ $date }}</p>
-                    </th>
-                </tr>
-                <tr>
-                    <th class="small-width sl-bg">Sl. No</th>
-                    @foreach ($columns as $column)
-                        <th>{{ $column }}</th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($datas as $data)
-                    <tr>
-                        <td class="sl-bg">{{ $loop->iteration }}</td>
-                        <td class="align-left">{{ $data->item->name }}</td>
-                        <td>{{ $data->balance }}</td>
-                    </tr>
+    {{-- <div class="table-wrapper"> --}}
+    <table>
+        <thead>
+            <tr>
+                <th colspan="3">
+                    <p>ZMC-SRHF</p>
+                    <p>{{ $title }}</p>
+                    <p>DATE: {{ $date }}</p>
+                </th>
+            </tr>
+            <tr>
+                <th class="small-width sl-bg">Sl. No</th>
+                @foreach ($columns as $column)
+                    <th>{{ $column }}</th>
                 @endforeach
-            </tbody>
-        </table>
-    </div>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($datas as $data)
+                <tr>
+                    <td class="sl-bg">{{ $loop->iteration }}</td>
+                    <td class="align-left">{{ $data->item->name }}</td>
+                    <td>{{ $data->balance }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {{-- </div> --}}
 </body>
 <style>
     body {
@@ -44,13 +44,15 @@
     .table-wrapper {
         display: flex;
         justify-content: center;
+        /* width: 100%; */
     }
 
     table {
         border-collapse: collapse;
+        width: 100vw;
     }
 
-    th[colspan] {
+    th[colspan="3"] {
         text-align: center;
         background: rgb(116, 90, 187);
         border: 0.5px solid rgb(116, 90, 187);
@@ -58,6 +60,7 @@
         padding: 0;
         color: white;
         font-weight: normal;
+        width: 100vw;
     }
 
     th.small-width {
@@ -86,6 +89,8 @@
     }
 
     th:nth-child(2) {
+        /* display: flex;
+        flex: 1; */
         width: 30em;
     }
 

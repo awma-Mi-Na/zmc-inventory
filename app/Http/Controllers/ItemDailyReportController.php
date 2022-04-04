@@ -46,7 +46,9 @@ class ItemDailyReportController extends Controller
                         'title' => 'DAILY STOCK REPORT',
                         'columns' => ['ITEMS', 'CUMULATIVE STOCK', 'BALANCE', 'RECEIVED', 'TOTAL', 'ISSUED', 'STOCK BALANCE']
                     ]
-                )->setPaper('a4', 'landscape')->stream("DAILY STOCK REPORT ({$date}).pdf");
+                )
+                    ->setPaper('a1', 'landscape')
+                    ->stream("DAILY STOCK REPORT ({$date}).pdf");
             }
 
             return response(

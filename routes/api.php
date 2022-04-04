@@ -44,7 +44,6 @@ Route::prefix('item/report')
         Route::get('{date}', [ItemDailyReportController::class, 'show'])->name('show');
         Route::post('first', [ItemDailyReportController::class, 'first_entry'])->name('first-entry');
         Route::post('', [ItemDailyReportController::class, 'store'])->name('store');
-        Route::get('{date}/download-pdf', [ItemDailyReportController::class, 'pdf'])->name('pdf');
     });
 
 Route::prefix('oxygen-tank/report')

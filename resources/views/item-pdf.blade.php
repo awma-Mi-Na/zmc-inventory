@@ -53,6 +53,7 @@
 
     table {
         border-collapse: collapse;
+        width: 100%;
     }
 
     th[colspan] {
@@ -63,6 +64,7 @@
         padding: 0;
         color: white;
         font-weight: normal;
+        width: 100vw;
     }
 
     th.small-width {

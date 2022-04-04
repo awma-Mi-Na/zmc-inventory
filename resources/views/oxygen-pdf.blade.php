@@ -50,9 +50,10 @@
 
     table {
         border-collapse: collapse;
+        width: 100%;
     }
 
-    th[colspan] {
+    th[colspan=5] {
         text-align: center;
         background: rgb(116, 90, 187);
         border: 0.5px solid rgb(116, 90, 187);
@@ -60,6 +61,7 @@
         padding: 0;
         color: white;
         font-weight: normal;
+        width: 100vw;
     }
 
     th.small-width {
