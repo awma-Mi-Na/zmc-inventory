@@ -10,6 +10,7 @@ use DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 use Validator;
 
 class BedOccupancyReportController extends Controller
@@ -149,9 +150,10 @@ class BedOccupancyReportController extends Controller
      * Display the specified resource.
      *
      * @param  string $date
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function show(string $date)
+    public function show(Request $request, string $date)
     {
         if (date('Y-m-d', strtotime($date)) != $date)
             return response(['message' => "Date must be in the format: yyyy-mm-dd"], 422);

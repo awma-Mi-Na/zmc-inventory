@@ -10,6 +10,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ItemDailyReportController extends Controller
 {
@@ -169,8 +170,6 @@ class ItemDailyReportController extends Controller
                     ->orderBy('entry_date', 'desc')
                     ->whereDate('entry_date', '<', $request->entry_date)
                     ->first();
-                $opening_balance = $opening->closing_balance;
-                $cumulative_stock = $opening->cumulative_stock + $received;
 
                 // update the same entry
                 if (!$opening) {
@@ -180,6 +179,9 @@ class ItemDailyReportController extends Controller
                         ->first();
                     $opening_balance = $opening->opening_balance;
                     $cumulative_stock = $opening->cumulative_stock - $opening->received + $received;
+                } else {
+                    $opening_balance = $opening->closing_balance;
+                    $cumulative_stock = $opening->cumulative_stock + $received;
                 }
 
                 if ($received == null)

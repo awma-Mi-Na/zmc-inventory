@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BedOccupancyReport;
 use App\Models\Item;
+use App\Models\ItemDailyReport;
+use App\Models\OxygenTankReport;
+use App\Models\TestKitReport;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -85,7 +91,7 @@ class ItemController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => 'max:255',
+                'name' => [Rule::unique('items', 'name')->where('type', 'item')->whereNot('id', $item->id)],
                 'type' => 'in:item,test_kit,oxygen_tank,ward'
             ],
             [
@@ -124,7 +130,48 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        $item->delete();
-        return response(['message' => 'Item has been deleted']);
+        try {
+            DB::beginTransaction();
+            switch ($item->type) {
+                case 'item':
+                    ItemDailyReport::where('item_id', $item->id)
+                        ->delete();
+                    break;
+
+                case 'test_kit':
+                    TestKitReport::where('item_id', $item->id)
+                        ->delete();
+                    break;
+
+                case 'oxygen_tank':
+                    OxygenTankReport::where('item_id', $item->id)
+                        ->delete();
+                    break;
+
+                case 'ward':
+                    BedOccupancyReport::where('item_id', $item->id)
+                        ->delete();
+                    break;
+
+                default:
+                    break;
+            }
+
+            $item->name = strtolower($item->name) . "_deleted";
+            $item->save();
+            $item->delete();
+
+            DB::commit();
+
+            return response(['message' => 'Item has been deleted']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response(
+                [
+                    'message' => $e->getMessage()
+                ],
+                500
+            );
+        }
     }
 }

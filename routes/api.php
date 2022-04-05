@@ -32,13 +32,11 @@ Route::middleware('auth:sanctum')
         Route::get('user', function () {
             return auth()->user();
         });
-
-        Route::get('items', [ItemController::class, 'index'])->name('items.index');
+        Route::apiResource('items', ItemController::class)->except(['store', 'show']);
 
         Route::prefix('item/report')
             ->as('item-report.')
             ->group(function () {
-                Route::get('{date}', [ItemDailyReportController::class, 'show'])->name('show');
                 Route::post('first', [ItemDailyReportController::class, 'first_entry'])->name('first-entry');
                 Route::post('', [ItemDailyReportController::class, 'store'])->name('store');
             });
@@ -46,7 +44,6 @@ Route::middleware('auth:sanctum')
         Route::prefix('oxygen-tank/report')
             ->as('oxygen-tank-report.')
             ->group(function () {
-                Route::get('{date}', [OxygenTankReportController::class, 'show'])->name('show');
                 Route::post('first', [OxygenTankReportController::class, 'first_entry'])->name('first-entry');
                 Route::post('', [OxygenTankReportController::class, 'store'])->name('store');
             });
@@ -54,7 +51,6 @@ Route::middleware('auth:sanctum')
         Route::prefix('test-kit/report')
             ->as('test-kit-report.')
             ->group(function () {
-                Route::get('{date}', [TestKitReportController::class, 'show'])->name('show');
                 Route::post('first', [TestKitReportController::class, 'first_entry'])->name('first-entry');
                 Route::post('', [TestKitReportController::class, 'store'])->name('store');
             });
@@ -62,10 +58,17 @@ Route::middleware('auth:sanctum')
         Route::prefix('bed-occupancy/report')
             ->as('bed-occupancy-report.')
             ->group(function () {
-                Route::get('{date}', [BedOccupancyReportController::class, 'show'])->name('show');
                 Route::post('first', [BedOccupancyReportController::class, 'first_entry'])->name('first-entry');
                 Route::post('', [BedOccupancyReportController::class, 'store'])->name('store');
             });
 
         Route::get('audits/{date}', GetAuditController::class)->name('audits');
     });
+
+
+Route::middleware('check.accessToken')->group(function () {
+    Route::get('item/report/{date}', [ItemDailyReportController::class, 'show'])->name('show');
+    Route::get('oxygen-tank/report/{date}', [OxygenTankReportController::class, 'show'])->name('show');
+    Route::get('test-kit/report/{date}', [TestKitReportController::class, 'show'])->name('show');
+    Route::get('bed-occupancy/report/{date}', [BedOccupancyReportController::class, 'show'])->name('show');
+});

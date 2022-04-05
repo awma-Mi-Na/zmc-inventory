@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 use Validator;
 
 class TestKitReportController extends Controller
@@ -120,9 +121,10 @@ class TestKitReportController extends Controller
      * Display the specified resource.
      *
      * @param  string $date
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function show(string $date)
+    public function show(Request $request, string $date)
     {
         if (date('Y-m-d', strtotime($date)) != $date)
             return response(['message' => 'Date must be in the format: yyyy-mm-dd']);

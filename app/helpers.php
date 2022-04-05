@@ -1,5 +1,7 @@
 <?php
 
+use Laravel\Sanctum\PersonalAccessToken;
+
 if (!function_exists('check_exists_or_null')) {
     function check_exists_or_null(string $key, array $array)
     {
