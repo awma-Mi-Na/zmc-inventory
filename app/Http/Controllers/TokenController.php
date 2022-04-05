@@ -23,6 +23,9 @@ class TokenController extends Controller
             [
                 'username' => 'required|exists:users,username',
                 'password' => 'required'
+            ],
+            [
+                'username.unique' => 'Username does not exists'
             ]
         );
         if ($validator->fails()) {
@@ -34,16 +37,7 @@ class TokenController extends Controller
             );
         }
 
-        try {
-            $user = User::where('username', $request->username)->firstOrFail();
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response(
-                [
-                    'message' => ['The user does not exist']
-                ],
-                404
-            );
-        }
+        $user = User::where('username', $request->username)->firstOrFail();
 
         if (!Hash::check($request->password, $user->password))
             return response(['message' => ['Password is incorrect.']], 422);

@@ -15,8 +15,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->create([
-            'username' => 'user'
-        ]);
+        $actions = ['daily', 'bed', 'oxygen', 'kit'];
+        foreach ($actions as $key => $action) {
+            User::factory()->create([
+                'username' => "user" . (int)$key + 1,
+                'actions' => $action
+            ]);
+        }
     }
 }
