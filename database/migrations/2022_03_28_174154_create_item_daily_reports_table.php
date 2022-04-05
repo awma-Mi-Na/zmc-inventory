@@ -18,8 +18,8 @@ return new class extends Migration
             $table->timestamp('entry_date');
             $table->integer('item_id');
             $table->integer('opening_balance');
-            $table->integer('received')->default(0);
-            $table->integer('issued')->default(0);
+            $table->integer('received')->nullable();
+            $table->integer('issued')->nullable();
             $table->integer('total');
             $table->integer('closing_balance');
             $table->bigInteger('cumulative_stock');

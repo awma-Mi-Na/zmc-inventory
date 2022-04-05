@@ -117,8 +117,8 @@ class OxygenTankReportController extends Controller
                 'name' => ['required', Rule::unique('items', 'name')->where('type', 'oxygen_tank')],
                 'entry_date' => 'required|date_format:Y-m-d',
                 'full' => 'required|numeric',
-                'empty' => 'required|numeric',
                 'in_use' => 'required|numeric',
+                'empty' => 'required|numeric',
             ],
             [
                 'name.unique' => 'The item name already exists.'

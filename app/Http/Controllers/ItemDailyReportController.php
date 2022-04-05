@@ -80,12 +80,12 @@ class ItemDailyReportController extends Controller
             [
                 'entry_date' => 'required|date_format:Y-m-d',
                 'name' => ['required', Rule::unique('items', 'name')->where('type', 'item')],
-                'received' => 'required|numeric',
-                'issued' => 'required|numeric',
-                'total' => 'required|numeric',
+                'cumulative_stock' => 'required|numeric',
                 'opening_balance' => 'required|numeric',
                 'closing_balance' => 'required|numeric',
-                'cumulative_stock' => 'required|numeric',
+                'total' => 'required|numeric',
+                'received' => 'required|numeric',
+                'issued' => 'required|numeric',
             ],
             [
                 'name.unique' => 'The item name already exists.'
@@ -145,6 +145,22 @@ class ItemDailyReportController extends Controller
                     return response(['message' => ["Item {$item['name']} does not belong to the category 'item'"]], 400);
                 $new_entry = [];
                 $opening_balance = null;
+                $cumulative_stock = 0;
+
+                // check if there exists an entry on the requested date
+                $report_today = ItemDailyReport::where('item_id', $item['id'])
+                    ->whereDate('entry_date', $request->entry_date)
+                    ->first();
+
+                // check and store received and issued values
+                $received = check_exists_or_null('received', $item);
+                $issued = check_exists_or_null('issued', $item);
+
+                // if received/issued is null, use their corresponding values from today's report; otherwise if today's report does not exists then use them as null
+                if (!$received && $report_today)
+                    $received = $report_today->received;
+                if (!$issued && $report_today)
+                    $issued = $report_today->issued;
 
                 // get previous entry; if it does not exist get today's entry
                 // use previous entry details if exists, otherwise update the same entry
@@ -153,7 +169,8 @@ class ItemDailyReportController extends Controller
                     ->orderBy('entry_date', 'desc')
                     ->whereDate('entry_date', '<', $request->entry_date)
                     ->first();
-                $cumulative_stock = 0;
+                $opening_balance = $opening->closing_balance;
+                $cumulative_stock = $opening->cumulative_stock + $received;
 
                 // update the same entry
                 if (!$opening) {
@@ -162,14 +179,13 @@ class ItemDailyReportController extends Controller
                         ->whereDate('entry_date', '=', $request->entry_date)
                         ->first();
                     $opening_balance = $opening->opening_balance;
-                    $cumulative_stock = $opening->cumulative_stock - $opening->received + check_exists_or_null('received', $item);
-                } else {
-                    $opening_balance = $opening->closing_balance;
-                    $cumulative_stock = $opening->cumulative_stock + check_exists_or_null('received', $item);
+                    $cumulative_stock = $opening->cumulative_stock - $opening->received + $received;
                 }
-                // check and store received and issued values
-                $received = check_exists_or_null('received', $item);
-                $issued = check_exists_or_null('issued', $item);
+
+                if ($received == null)
+                    $received = $opening->received;
+                if ($issued == null)
+                    $received = $opening->issued;
 
                 // store request attributes
                 $new_entry['item_id'] = $item['id'];
@@ -181,6 +197,10 @@ class ItemDailyReportController extends Controller
                 $new_entry['entry_date'] = $request->entry_date;
                 // cumulative stock calculation unsure(add total, or add the received stock)
                 $new_entry['cumulative_stock'] = $cumulative_stock;
+                $new_entry = array_filter($new_entry, function ($item) {
+                    return $item !== null;
+                });
+                // return $new_entry;
 
                 ItemDailyReport::updateOrCreate(['entry_date' => $request->entry_date, 'item_id' => $item['id']], $new_entry);
             }

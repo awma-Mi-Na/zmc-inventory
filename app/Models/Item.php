@@ -43,6 +43,11 @@ class Item extends \Eloquent implements Auditable
 {
     use HasFactory, SoftDeletes, \OwenIt\Auditing\Auditable;
 
+    public function getNameAttribute($name)
+    {
+        return ucwords($name);
+    }
+
     public function item_daily_reports()
     {
         return $this->hasMany(ItemDailyReport::class);

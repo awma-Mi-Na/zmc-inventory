@@ -26,18 +26,20 @@ class BedOccupancyReportController extends Controller
             $request->all(),
             [
                 'name' => ['required', Rule::unique('items', 'name')->where('type', 'ward')],
+                'total' => 'required|numeric',
+                'patients' => 'required|numeric',
+                'attendants' => 'required|numeric',
+                'positive_attendants' => 'required|numeric',
+                'empty' => 'required|numeric',
+                'on_oxygen' => 'required|numeric',
                 'on_ventilator_invasive' => 'required|numeric',
                 'on_ventilator_niv' => 'required|numeric',
-                'on_oxygen' => 'required|numeric',
-                'empty' => 'required|numeric',
-                'positive_attendants' => 'required|numeric',
-                'attendants' => 'required|numeric',
-                'patients' => 'required|numeric',
-                'total' => 'required|numeric',
                 'entry_date' => 'required|date_format:Y-m-d',
             ],
             [
-                'name.unique' => 'The item name already exists.'
+                'name.required' => 'Ward field is required',
+                'name.unique' => 'The item name already exists.',
+                'total.required' => 'Total beds field is required',
             ]
         );
         if ($validator->fails()) {

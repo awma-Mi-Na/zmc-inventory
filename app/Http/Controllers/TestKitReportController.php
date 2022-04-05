@@ -25,8 +25,8 @@ class TestKitReportController extends Controller
             $request->all(),
             [
                 'name' => ['required', Rule::unique('items', 'name')->where('type', 'test_kit')],
-                'entry_date' => 'required|date_format:Y-m-d',
                 'balance' => 'required|numeric',
+                'entry_date' => 'required|date_format:Y-m-d',
             ],
             [
                 'name.unique' => 'The item name already exists.'
