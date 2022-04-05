@@ -45,7 +45,8 @@ class TokenController extends Controller
         return response(
             [
                 'message' => 'Login successful',
-                'token' => $user->createToken('auth-token')->plainTextToken
+                'token' => $user->createToken('auth-token')->plainTextToken,
+                'action' => $user->actions
             ]
         );
     }
