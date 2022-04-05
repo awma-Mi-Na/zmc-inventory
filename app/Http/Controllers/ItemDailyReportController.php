@@ -38,7 +38,7 @@ class ItemDailyReportController extends Controller
                 return response(['message' => ["No record found on $date"]], 404);
 
             if ($request->download == 'pdf') {
-                return Pdf::loadView(
+                return $pdf = Pdf::loadView(
                     'item-pdf',
                     [
                         'datas' => $return_data,
@@ -47,7 +47,7 @@ class ItemDailyReportController extends Controller
                         'columns' => ['ITEMS', 'CUMULATIVE STOCK', 'BALANCE', 'RECEIVED', 'TOTAL', 'ISSUED', 'STOCK BALANCE']
                     ]
                 )
-                    ->setPaper('a1', 'landscape')
+                    ->setPaper('a4', 'landscape')
                     ->stream("DAILY STOCK REPORT ({$date}).pdf");
             }
 

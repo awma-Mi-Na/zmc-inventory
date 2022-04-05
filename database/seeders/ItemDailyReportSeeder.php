@@ -17,9 +17,8 @@ class ItemDailyReportSeeder extends Seeder
      */
     public function run()
     {
-        $start_date = Carbon::createFromDate(2022, 3, 1);
-        $no_days = 30;
-        for ($i = 0; $i < $no_days; $i++) {
+        $start_date = Carbon::createFromDate(2022, 4, 1);
+        for ($start_date; $start_date->toDateString() <= now()->toDateString(); $start_date->addDay()) {
             $date = $start_date->toDateString();
             foreach (Item::where('type', 'item')->get() as $item) {
                 ItemDailyReport::factory()->create(
@@ -29,7 +28,6 @@ class ItemDailyReportSeeder extends Seeder
                     ]
                 );
             }
-            $start_date->addDay();
         }
     }
 }
